@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Açaí Essence | Menu de Luxo e Animações</title>
+    <!-- Carregamento do Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configuração de Fontes e Cores Personalizadas -->
+    <style>
+        /* Usando Poppins para todo o texto */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+        
+        :root {
+            /* Paleta de Luxo e VIBRANTE */
+            --color-primary: #581C87;    /* Roxo Profundo */
+            --color-accent: #84CC16;     /* Verde Lima Agressivo */
+            --color-secondary: #FBBF24;  /* Dourado Vibrante */
+            --color-vibrant-pink: #EC4899; /* Pink para Shakes */
+            --color-background: #F8F9FA; /* Off-White Claro */
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--color-background);
+            color: #1E293B; 
+            min-height: 10vh;
+        }
+        .bg-primary { background-color: var(--color-primary); }
+        .text-primary { color: var(--color-primary); }
+        .bg-accent { background-color: var(--color-accent); }
+        .text-accent { color: var(--color-accent); }
+        .bg-vibrant-pink { background-color: var(--color-vibrant-pink); }
+        .text-vibrant-pink { color: var(--color-vibrant-pink); }
+
+        .luxury-title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 900;
+        }
+
+        /* Animações e Transições Avançadas */
+        .card-premium {
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        .card-premium:hover {
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Modal Animation (Fade-in e Scale-up) */
+        .modal-overlay {
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            pointer-events: none;
+        }
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .modal-overlay.open .modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        /* Estilo para o Painel de Mensagens */
+        #message-box {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background-color: #333;
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            transform: translateY(-50px);
+            z-index: 2000;
+        }
+        #message-box.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .page-content {
+            display: none;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#581C87',
+                        accent: '#84CC16',
+                        secondary: '#FBBF24',
+                        pinkshake: '#EC4899',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="antialiased">
+
+    <!-- Painel de Mensagens -->
+    <div id="message-box" role="alert" class="font-medium"></div>
+
+    <!-- 1. HEADER E NAVEGAÇÃO -->
+    <header class="sticky top-0 z-50 bg-white shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo de Luxo -->
+                <a href="#" onclick="window.scrollTo({ top: 0, behavior: 'smooth' }); showPage('home-page');" class="flex items-center cursor-pointer">
+                    <span class="luxury-title text-3xl font-extrabold text-primary">Açaí <span class="text-secondary">Essence</span></span>
+                </a>
+                
+                <!-- Navegação Desktop -->
+                <nav class="hidden md:flex space-x-6 font-semibold items-center">
+                    <a href="#" onclick="showPage('home-page')" class="text-gray-600 hover:text-primary transition duration-300">Menu Açaí</a>
+                    
+                    <!-- Botão Milk-shakes (Novo e Deslumbrante) -->
+                    <a href="#" onclick="showPage('milkshake-menu-page')" class="bg-vibrant-pink hover:bg-pink-600 text-white font-bold py-2 px-6 rounded-full shadow-lg transition duration-300 transform hover:scale-105">
+                        Shakes Premium
+                    </a>
+                </nav>
+                
+                <!-- CTA do Carrinho -->
+                <button onclick="showPage('cart-page')" class="bg-primary hover:bg-purple-800 text-white font-semibold py-2 px-6 rounded-full shadow-md transition duration-300 flex items-center space-x-2 transform hover:ring-4 hover:ring-accent hover:ring-opacity-50">
+                    <svg class="w-5 h-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    <span id="cart-count">0</span>
+                </button>
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-button" class="md:hidden p-2 rounded-full text-primary hover:bg-purple-50 transition duration-300">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Menu (Dropdown) -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-xl">
+            <div class="pt-2 pb-3 space-y-1 sm:px-3 flex flex-col items-center">
+                <a href="#" onclick="showPage('home-page')" class="block py-2 px-4 text-gray-700 hover:bg-purple-50 w-full text-center">Menu Açaí</a>
+                <a href="#" onclick="showPage('milkshake-menu-page')" class="block py-2 px-4 bg-vibrant-pink/10 text-vibrant-pink hover:bg-vibrant-pink/20 w-full text-center font-bold">Shakes Premium</a>
+                <a href="#" onclick="showPage('cart-page')" class="block w-3/4 bg-primary hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full mt-2 text-center shadow-md transition duration-300">
+                    Ir para o Carrinho
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="min-h-screen">
+        <!-- PÁGINA INICIAL: HERO + MENU AÇAÍ -->
+        <section id="home-page" class="page-content">
+            
+            <!-- Hero Section (Mais Vibrante) -->
+            <div class="relative bg-primary py-24 md:py-40 overflow-hidden shadow-2xl">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 grid lg:grid-cols-2 gap-12 items-center">
+                    <div class="text-white text-center lg:text-left">
+                        <h1 class="luxury-title text-5xl md:text-7xl font-extrabold leading-tight mb-4 tracking-tight">
+                            A Elegância do <span class="text-accent">Sabor</span>.
+                        </h1>
+                        <p class="text-xl opacity-90 mb-8 font-light max-w-lg lg:max-w-none mx-auto lg:mx-0">
+                            Açaí Essence: Ingredientes selecionados, zero conservantes. Uma experiência artesanal inigualável.
+                        </p>
+                        
+                        <div class="mt-8 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 justify-center lg:justify-start">
+                            <a href="#acai-menu-start" class="inline-flex items-center justify-center bg-accent hover:bg-lime-500 text-primary font-bold text-lg py-3 px-10 rounded-full shadow-2xl transition duration-300 min-w-[200px] border-4 border-white transform hover:scale-105">
+                                EXPLORE O AÇAÍ
+                            </a>
+                             <!-- Botão Milk-shakes no Hero (Visível) -->
+                            <a href="#" onclick="showPage('milkshake-menu-page')" class="inline-flex items-center justify-center bg-vibrant-pink hover:bg-pink-600 text-white font-bold text-lg py-3 px-10 rounded-full shadow-2xl transition duration-300 min-w-[200px] border-4 border-white transform hover:scale-105">
+                                SHAKES PREMIUM
+                            </a>
+                        </div>
+                    </div>
+                    <div class="hidden lg:block relative">
+                        <div class="w-full h-80 rounded-3xl shadow-2xl bg-white/10 border-4 border-secondary flex items-center justify-center p-6 backdrop-blur-sm">
+                            <span class="text-white opacity-90 luxury-title text-4xl font-black">
+                                [Imagem Principal de Açaí]
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Menu Açaí (Cardápio principal - Interativo) -->
+            <div class="py-16 md:py-24 bg-gray-100" id="acai-menu-start">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 class="luxury-title text-4xl font-extrabold text-center mb-16 text-primary">
+                        Menu Açaí | Taças Exclusivas
+                    </h2>
+                    
+                    <!-- Container para os cards de Açaí (preenchido via JS) -->
+                    <div id="acai-cards-container" class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <!-- Os cards de Açaí serão injetados aqui via JavaScript -->
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. SEÇÃO EXCLUSIVA: MILK-SHAKES PREMIUM -->
+        <section id="milkshake-menu-page" class="page-content py-16 md:py-24 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="luxury-title text-4xl font-extrabold text-center mb-16 text-vibrant-pink">
+                    Shakes Premium | Experiências Geladas Deslumbrantes
+                </h2>
+
+                <!-- Container para os cards de Milk-shake (preenchido via JS) -->
+                <div id="milkshake-cards-container" class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Os cards de Milk-shake serão injetados aqui via JavaScript -->
+                </div>
+                
+            </div>
+        </section>
+
+        <!-- 4. SEÇÃO DO CARRINHO E CHECKOUT -->
+        <section id="cart-page" class="page-content py-16 md:py-24 bg-gray-100">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="luxury-title text-4xl font-bold text-center mb-12 text-primary">
+                    Finalize Seu <span class="text-secondary">Pedido Essence</span>
+                </h2>
+
+                <div class="bg-white p-6 md:p-10 rounded-2xl shadow-2xl border-t-8 border-primary">
+                    
+                    <!-- Itens do Carrinho -->
+                    <h3 class="luxury-title text-2xl font-semibold text-primary mb-4 border-b pb-2">Seu Pedido</h3>
+                    <div id="cart-items" class="space-y-4 mb-6">
+                        <p class="text-gray-500 italic" id="empty-cart-message">Seu carrinho está vazio. Comece explorando nosso menu de luxo!</p>
+                    </div>
+
+                    <!-- Total do Pedido -->
+                    <div class="flex justify-between items-center border-t border-gray-300 pt-4">
+                        <span class="text-xl font-bold text-gray-800">TOTAL ESSENCE:</span>
+                        <span class="text-4xl font-black text-primary" id="cart-total">R$ 0,00</span>
+                    </div>
+
+                    <div class="mt-8 border-t border-gray-200 pt-8">
+                        <h3 class="luxury-title text-2xl font-semibold text-primary mb-6 text-center">Informações para Entrega</h3>
+                        
+                        <div class="mb-6">
+                            <label for="address" class="block text-gray-700 font-medium mb-2">Endereço Completo</label>
+                            <input type="text" id="address" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary" placeholder="Rua, Número, Bairro, Ponto de Referência" required>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-gray-700 font-medium mb-2">Forma de Pagamento</label>
+                            <select id="payment-method" onchange="handlePaymentChange()" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
+                                <option value="Cartão">Cartão (Crédito/Débito)</option>
+                                <option value="Dinheiro">Dinheiro</option>
+                                <option value="PIX">PIX (Recomendado)</option>
+                            </select>
+                        </div>
+
+                        <div id="change-needed-field" class="mb-6 hidden">
+                            <label for="change-amount" class="block text-gray-700 font-medium mb-2">Precisa de Troco para (R$)?</label>
+                            <input type="number" id="change-amount" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary" placeholder="0.00" min="0" value="0.00" step="0.01">
+                        </div>
+
+                        <div class="mb-8">
+                            <label for="notes" class="block text-gray-700 font-medium mb-2">Observações Adicionais</label>
+                            <textarea id="notes" rows="3" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary" placeholder="Ex: Sem granola, embalagem discreta, entregar no apartamento 501."></textarea>
+                        </div>
+                        
+                        <button onclick="generateWhatsAppLink()" class="w-full bg-primary hover:bg-purple-800 text-white font-extrabold text-xl py-4 rounded-xl shadow-xl transition duration-300 transform hover:scale-[1.01]">
+                            ✅ ENVIAR PEDIDO ESSENCE (WhatsApp)
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. FOOTER E CONTATO -->
+        <footer id="contato" class="bg-gray-900 text-white py-12">
+             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-4 gap-8">
+                <div>
+                    <span class="luxury-title text-3xl font-extrabold text-white mb-2 inline-block">Açaí <span class="text-secondary">Essence</span></span>
+                    <p class="text-sm text-gray-400">Açaí de Luxo. Qualidade e sabor inigualável em cada colher.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-xl mb-3 border-b border-gray-700 pb-1">Navegação</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" onclick="showPage('home-page')" class="hover:text-primary transition">Menu Essence</a></li>
+                        <li><a href="#" onclick="showPage('milkshake-menu-page')" class="hover:text-pinkshake transition">Shakes Premium</a></li>
+                        <li><a href="#" onclick="showPage('cart-page')" class="hover:text-accent transition">Finalizar Pedido</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-xl mb-3 border-b border-gray-700 pb-1">Contato Essence</h4>
+                    <p class="text-sm text-gray-400">
+                        WhatsApp: (38) 99800-4892<br>
+                        Email: contato@acaiessence.com.br
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-xl mb-3 border-b border-gray-700 pb-1">Atendimento</h4>
+                    <p class="text-sm text-gray-400">
+                        Diariamente: 12h às 23h<br>
+                        <span class="text-accent font-medium mt-2 block">Entregas rápidas em embalagens térmicas.</span>
+                    </p>
+                </div>
+            </div>
+            <div class="mt-8 border-t border-gray-700 pt-6 text-center text-sm text-gray-500">
+                &copy; 2025 Açaí Essence. Todos os direitos reservados.
+            </div>
+        </footer>
+
+        <!-- MODAL DE DETALHES DO PRODUTO (Saiba Mais) -->
+        <div id="details-modal-overlay" class="modal-overlay fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-[1500]">
+            <div id="details-modal-content" class="modal-content bg-white w-full max-w-2xl max-h-[90vh] rounded-xl overflow-y-auto shadow-2xl p-6 md:p-8 relative">
+                
+                <!-- Botão Fechar -->
+                <button onclick="closeDetailsModal()" class="absolute top-4 right-4 text-gray-400 hover:text-primary transition p-2 rounded-full hover:bg-gray-100">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+
+                <!-- Conteúdo Dinâmico -->
+                <div id="modal-product-details">
+                    <!-- Detalhes do produto (serão injetados pelo JS) -->
+                </div>
+                
+                <!-- Formulário de Seleção (Volume e Quantidade) -->
+                <div class="mt-8 pt-6 border-t border-gray-200">
+                    <h4 class="text-xl font-bold text-primary mb-4 text-center">Personalize Seu Pedido</h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                        <!-- Volume/Tamanho -->
+                        <div>
+                            <label class="text-sm font-semibold text-gray-600 block mb-2 text-center md:text-left">Escolha o Volume/Tamanho:</label>
+                            <div id="modal-volume-options" class="flex justify-center md:justify-start space-x-2">
+                                <!-- Opções injetadas pelo JS -->
+                            </div>
+                        </div>
+
+                        <!-- Quantidade -->
+                        <div>
+                            <label class="text-sm font-semibold text-gray-600 block mb-2 text-center md:text-left">Quantidade:</label>
+                            <!-- Centralizando o input em telas menores -->
+                            <div class="max-w-[120px] mx-auto md:mx-0">
+                                <input type="number" id="modal-qty-input" value="1" min="1" class="w-full p-3 text-center border-2 border-gray-300 rounded-xl text-2xl font-bold focus:border-accent focus:ring-accent" oninput="updateModalPrice()">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Preço Total e Botão Adicionar -->
+                    <div class="mt-8 flex flex-col md:flex-row justify-between items-center bg-gray-50 p-4 rounded-xl shadow-inner text-center md:text-left">
+                        <div class="text-center md:text-left mb-4 md:mb-0">
+                            <span class="text-sm text-gray-600 block">Valor Total:</span>
+                            <span id="modal-price-display" class="text-4xl font-black text-primary">R$ 0,00</span>
+                        </div>
+                        <button id="modal-add-to-cart-button" class="bg-accent hover:bg-lime-500 text-primary font-bold text-lg py-4 px-8 rounded-full transition duration-300 shadow-lg transform hover:scale-[1.05]" 
+                                onclick="addToCartFromModal()">
+                            ADICIONAR AO CARRINHO
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Importações Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot, collection, query, setDoc, updateDoc, deleteDoc, getDocs, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        // As variáveis globais são fornecidas pelo ambiente Canvas
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-acai-app';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        if (Object.keys(firebaseConfig).length > 0) {
+            try {
+                const app = initializeApp(firebaseConfig);
+                const db = getFirestore(app);
+                const auth = getAuth(app);
+                
+                setLogLevel('debug'); // Ativar logs para debug
+                
+                // Autenticação
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        console.log("Usuário autenticado:", user.uid);
+                        window.userId = user.uid;
+                        window.db = db;
+                    } else {
+                        // Tenta signInWithCustomToken se disponível, caso contrário, anônimo
+                        if (initialAuthToken) {
+                            try {
+                                await signInWithCustomToken(auth, initialAuthToken);
+                            } catch (error) {
+                                console.error("Erro ao autenticar com token customizado:", error);
+                                await signInAnonymously(auth);
+                            }
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    }
+                });
+
+            } catch (error) {
+                console.error("Falha ao inicializar o Firebase. Continuará sem persistência de dados:", error);
+            }
+        }
+    </script>
+
+    <!-- JavaScript para a Interatividade e Carrinho -->
+    <script>
+    (function() {
+        // --- CONFIGURAÇÃO E DADOS ---
+        
+        const WHATSAPP_NUMBER = "5538998004892"; 
+        
+        const products = [
+            { id: 1, type: 'acai', name: 'Açaí Trufado Dourado', tag: '🍫 Calda de Chocolate 70% Cacao', description: 'Açaí cremoso, brigadeiro de colher, e finalização com nibs de cacau. Uma combinação potente e luxuosa.', basePrice: 29.90, imgPlaceholder: '[Foto Açaí Trufado]', ingredients: ['Açaí Zero Açúcar', 'Brigadeiro Gourmet (Leite Condensado, Chocolate 70%)', 'Nibs de Cacau', 'Toppings de Morango Fresco'] },
+            { id: 2, type: 'acai', name: 'Detox Lima Essence', tag: '🍃 Sabor Refrescante', description: 'Açaí batido com suco de limão, hortelã e sementes de chia. Leve, refrescante e super nutritivo.', basePrice: 25.00, imgPlaceholder: '[Foto Açaí Detox]', ingredients: ['Açaí Orgânico', 'Suco de Limão Natural', 'Folhas de Hortelã Fresca', 'Sementes de Chia', 'Mel Orgânico (Opcional)'] },
+            { id: 3, type: 'acai', name: 'Clássico Essence', tag: '🌰 A Pura Tradição Artesanal', description: 'Açaí puro batido, servido com castanhas premium e mel orgânico. O sabor original levado ao luxo.', basePrice: 22.00, imgPlaceholder: '[Foto Açaí Clássico]', ingredients: ['Açaí Puro (Polpa)', 'Banana Congelada', 'Castanhas do Pará', 'Mel Orgânico', 'Granola Artesanal'] },
+            { id: 4, type: 'acai', name: 'Power Whey Protein', tag: '💪 Nutrição e Recuperação', description: 'Açaí Zero, Whey Protein e mix de sementes e frutas vermelhas. Ideal para o pós-treino.', basePrice: 28.50, imgPlaceholder: '[Foto Açaí Whey]', ingredients: ['Açaí Zero Açúcar', 'Whey Protein Isolado (Sabor Baunilha)', 'Frutas Vermelhas (Morango, Mirtilo)', 'Sementes de Abóbora'] },
+            
+            // Milkshakes
+            { id: 5, type: 'shake', name: 'Caramelo Salgado Essence', tag: '⭐ Luxo Salgado-Doce', description: 'Sorvete de baunilha premium, calda de caramelo artesanal e toque de sal rosa. Um shake indulgente.', basePrice: 25.90, imgPlaceholder: '[Foto Shake Caramelo]', ingredients: ['Sorvete de Baunilha Premium', 'Leite Integral', 'Calda de Caramelo Salgado Caseira', 'Chantilly', 'Raspas de Chocolate ao Leite'] },
+            { id: 6, type: 'shake', name: 'Pistache Crocante Essence', tag: '🌿 Sabor Italiano', description: 'Feito com pasta de pistache italiana e granulado de pistache torrado. O luxo do sabor.', basePrice: 29.00, imgPlaceholder: '[Foto Shake Pistache]', ingredients: ['Sorvete de Pistache', 'Pasta de Pistache 100%', 'Pedaços de Pistache Torrado', 'Leite Integral', 'Cobertura de Chocolate Branco'] },
+            { id: 7, type: 'shake', name: 'Chocolate Branco & Cereja', tag: '🍒 Indulgência Total', description: 'Chocolate branco cremoso e pedaços de cerejas importadas. Sabor surpreendente.', basePrice: 30.50, imgPlaceholder: '[Foto Shake Cereja]', ingredients: ['Sorvete de Chocolate Branco', 'Leite Integral', 'Cerejas em Calda (Importadas)', 'Chantilly', 'Raspas de Chocolate Branco'] },
+            { id: 8, type: 'shake', name: 'Menta & Chocolate Essence', tag: '🧊 O Mais Refrescante', description: 'Sorvete de menta com pedaços de chocolate meio amargo. Perfeito para o verão.', basePrice: 26.00, imgPlaceholder: '[Foto Shake Menta]', ingredients: ['Sorvete de Menta', 'Pedaços de Chocolate Meio Amargo', 'Leite Integral', 'Xarope de Menta', 'Cobertura de Chocolate'] },
+        ];
+
+        const VOLUME_MULTIPLIERS = [
+            { ml: '300ml', multiplier: 1.0 },
+            { ml: '500ml', multiplier: 1.3 },
+            { ml: '700ml', multiplier: 1.6 }
+        ];
+
+        // --- ESTADO GLOBAL (CARRINHO E MODAL) ---
+        let cart = []; 
+        let currentModalProduct = null; 
+
+        // --- REFERÊNCIAS DOM ---
+        const messageBox = document.getElementById('message-box');
+        const cartCount = document.getElementById('cart-count');
+        const cartItemsContainer = document.getElementById('cart-items');
+        const cartTotalDisplay = document.getElementById('cart-total');
+        const changeNeededField = document.getElementById('change-needed-field');
+        const paymentMethodSelect = document.getElementById('payment-method');
+        const detailsModalOverlay = document.getElementById('details-modal-overlay');
+        const modalProductDetails = document.getElementById('modal-product-details');
+        const modalVolumeOptions = document.getElementById('modal-volume-options');
+        const modalQtyInput = document.getElementById('modal-qty-input');
+        const modalPriceDisplay = document.getElementById('modal-price-display');
+        const modalAddToCartButton = document.getElementById('modal-add-to-cart-button');
+
+        // --- FUNÇÕES DE UTILIDADE ---
+
+        function alertMessage(message, type = 'success') {
+            let bgColor = type === 'success' ? '#84CC16' : '#D97706'; 
+            let textColor = type === 'success' ? '#1E293B' : 'white';
+            messageBox.textContent = message;
+            messageBox.style.backgroundColor = bgColor;
+            messageBox.style.color = textColor;
+            messageBox.classList.add('show');
+            setTimeout(() => {
+                messageBox.classList.remove('show');
+            }, 3000);
+        }
+
+        window.showPage = function(pageId) {
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.style.display = 'none';
+            });
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {
+                targetPage.style.display = 'block';
+                if (pageId === 'cart-page') {
+                    renderCart();
+                }
+                document.getElementById('mobile-menu').classList.add('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+        
+        // --- RENDERIZAÇÃO DE CARDS E MODAL ---
+
+        function renderProductCards() {
+            const acaiContainer = document.getElementById('acai-cards-container');
+            const shakeContainer = document.getElementById('milkshake-cards-container');
+            acaiContainer.innerHTML = '';
+            shakeContainer.innerHTML = '';
+
+            products.forEach(product => {
+                const isAcai = product.type === 'acai';
+                const container = isAcai ? acaiContainer : shakeContainer;
+                const tagColor = isAcai ? 'text-secondary' : 'text-vibrant-pink';
+                const borderColor = isAcai ? 'border-primary' : 'border-vibrant-pink';
+                const buttonColor = isAcai ? 'bg-primary hover:bg-purple-800' : 'bg-vibrant-pink hover:bg-pink-600';
+
+                const cardHTML = `
+                    <div class="bg-white p-4 rounded-2xl card-premium border-2 ${borderColor} flex flex-col" data-id="${product.id}">
+                        <!-- Placeholder para Imagem -->
+                        <div class="w-full h-32 mb-4 overflow-hidden rounded-xl bg-gray-100 flex items-center justify-center border border-gray-200">
+                            <span class="text-gray-500 luxury-title text-xl">${product.imgPlaceholder}</span>
+                        </div>
+
+                        <h3 class="luxury-title text-xl font-bold text-primary">${product.name}</h3>
+                        <span class="text-sm font-bold ${tagColor} mb-3">${product.tag}</span>
+                        <p class="text-gray-600 mb-4 flex-grow text-sm">${product.description.substring(0, 70)}...</p>
+                        
+                        <div class="flex justify-between items-center mt-auto pt-3 border-t border-gray-100">
+                            <span class="text-xl font-black text-primary">R$ ${product.basePrice.toFixed(2).replace('.', ',')}*</span>
+                            <button onclick="openDetailsModal(${product.id})" class="text-sm font-bold ${buttonColor} text-white py-2 px-4 rounded-full transition duration-300 shadow-md transform hover:scale-[1.05]">
+                                Saiba Mais
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += cardHTML;
+            });
+        }
+        
+        // --- LÓGICA DO MODAL DE DETALHES ---
+
+        window.openDetailsModal = function(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return alertMessage("Erro ao carregar detalhes do produto.", 'error');
+
+            currentModalProduct = product;
+
+            // 1. Renderizar Detalhes do Produto
+            const ingredientList = product.ingredients.map(ing => `<li class="text-gray-600 flex items-start mt-1"><span class="text-accent text-lg mr-2">•</span> ${ing}</li>`).join('');
+            
+            modalProductDetails.innerHTML = `
+                <div class="text-center mb-6">
+                    <div class="w-3/4 mx-auto h-40 mb-4 overflow-hidden rounded-2xl bg-gray-100 flex items-center justify-center border-4 border-secondary/50">
+                        <span class="text-gray-500 luxury-title text-2xl">${product.imgPlaceholder}</span>
+                    </div>
+                    <h2 class="luxury-title text-4xl font-extrabold text-primary">${product.name}</h2>
+                    <span class="text-lg font-bold ${product.type === 'acai' ? 'text-secondary' : 'text-vibrant-pink'}">${product.tag}</span>
+                    <p class="text-gray-600 mt-2 italic">${product.description}</p>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2 border-b pb-1">Ingredientes Exclusivos:</h3>
+                <ul class="list-none text-left pl-0 grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+                    ${ingredientList}
+                </ul>
+            `;
+            
+            // 2. Renderizar Opções de Volume (COM FEEDBACK VISUAL AGORA ROXO)
+            modalVolumeOptions.innerHTML = VOLUME_MULTIPLIERS.map((v, index) => `
+                <input type="radio" id="modal-volume-${v.ml}" name="modal-volume" value="${v.ml}" data-multiplier="${v.multiplier}" ${index === 0 ? 'checked' : ''} class="hidden" onchange="updateModalPrice()">
+                <label for="modal-volume-${v.ml}" class="flex-1 text-center py-3 px-1 rounded-xl text-sm font-medium cursor-pointer border-2 border-gray-300 has-[:checked]:bg-primary has-[:checked]:text-white has-[:checked]:border-primary has-[:checked]:ring-4 has-[:checked]:ring-primary has-[:checked]:ring-offset-2 transition duration-200 transform hover:scale-[1.03]">${v.ml}</label>
+            `).join('');
+
+            // 3. Resetar Quantidade
+            modalQtyInput.value = 1;
+            
+            // 4. Calcular e Exibir Preço Inicial
+            updateModalPrice();
+
+            // 5. Exibir Modal
+            detailsModalOverlay.classList.add('open');
+        }
+        
+        window.closeDetailsModal = function() {
+            detailsModalOverlay.classList.remove('open');
+            currentModalProduct = null;
+        }
+
+        window.updateModalPrice = function() {
+            if (!currentModalProduct) return;
+
+            const basePrice = currentModalProduct.basePrice;
+            
+            const selectedVolumeRadio = modalVolumeOptions.querySelector('input[type="radio"]:checked');
+            if (!selectedVolumeRadio) return; 
+
+            const multiplier = parseFloat(selectedVolumeRadio.dataset.multiplier);
+            const quantity = parseInt(modalQtyInput.value) || 1;
+            
+            const finalPricePerUnit = basePrice * multiplier;
+            const finalTotalPrice = finalPricePerUnit * quantity;
+
+            // Atualiza o botão e o display
+            modalPriceDisplay.textContent = `R$ ${finalTotalPrice.toFixed(2).replace('.', ',')}`;
+            modalAddToCartButton.textContent = `ADICIONAR ${quantity}X POR R$ ${finalTotalPrice.toFixed(2).replace('.', ',')}`;
+        }
+        
+        window.addToCartFromModal = function() {
+            if (!currentModalProduct) return;
+
+            const product = currentModalProduct;
+            const selectedVolumeRadio = modalVolumeOptions.querySelector('input[type="radio"]:checked');
+            const volume = selectedVolumeRadio.value;
+            const multiplier = parseFloat(selectedVolumeRadio.dataset.multiplier);
+            const quantity = parseInt(modalQtyInput.value) || 1;
+
+            if (quantity <= 0) {
+                 return alertMessage(`⚠️ Por favor, escolha pelo menos 1 unidade.`, 'error');
+            }
+
+            const finalPricePerUnit = product.basePrice * multiplier;
+            const uniqueName = `${product.name} (${volume})`;
+
+            const existingItemIndex = cart.findIndex(item => item.uniqueName === uniqueName);
+            
+            if (existingItemIndex !== -1) {
+                cart[existingItemIndex].quantity += quantity;
+            } else {
+                cart.push({ 
+                    name: product.name, 
+                    uniqueName: uniqueName, 
+                    price: finalPricePerUnit, 
+                    volume: volume,
+                    quantity: quantity 
+                });
+            }
+            
+            updateCartCount();
+            alertMessage(`✅ ${quantity}x "${uniqueName}" adicionado ao Essence Carrinho!`, 'success');
+            closeDetailsModal();
+        }
+
+        // --- LÓGICA DO CARRINHO (SIMPLIFICADA) ---
+
+        function updateCartCount() {
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = count;
+        }
+
+        function calculateTotal() {
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            return total;
+        }
+
+        window.removeItem = function(uniqueName) {
+            cart = cart.filter(item => item.uniqueName !== uniqueName);
+            updateCartCount();
+            renderCart();
+            alertMessage('Item removido do carrinho.', 'warning');
+        }
+
+        function renderCart() {
+            cartItemsContainer.innerHTML = '';
+            const total = calculateTotal();
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p class="text-gray-500 italic text-center">Seu carrinho está vazio. Adicione um Açaí, Milk-shake ou Combo para começar!</p>';
+            } else {
+                cart.forEach(item => {
+                    const itemTotal = (item.price * item.quantity).toFixed(2).replace('.', ',');
+                    const itemPriceUnit = item.price.toFixed(2).replace('.', ',');
+                    
+                    const itemElement = document.createElement('div');
+                    itemElement.className = 'flex justify-between items-center p-3 bg-gray-50 rounded-xl shadow-sm border border-gray-200 transition duration-300 hover:shadow-md';
+                    itemElement.innerHTML = `
+                        <div class="flex-grow">
+                            <span class="font-bold text-gray-800">${item.quantity}x ${item.name}</span>
+                            <span class="text-sm font-semibold text-primary block">${item.volume}</span>
+                            <span class="text-xs text-gray-500 block">R$ ${itemPriceUnit} cada</span>
+                        </div>
+                        <div class="font-black text-primary mr-4 text-xl">R$ ${itemTotal}</div>
+                        <button onclick="removeItem('${item.uniqueName}')" class="text-red-500 hover:text-red-700 transition duration-150 p-2 rounded-full bg-red-100 hover:bg-red-200">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    `;
+                    cartItemsContainer.appendChild(itemElement);
+                });
+            }
+
+            cartTotalDisplay.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+        }
+
+        // --- LÓGICA DO CHECKOUT ---
+
+        window.handlePaymentChange = function() {
+            if (paymentMethodSelect.value === 'Dinheiro') {
+                changeNeededField.classList.remove('hidden');
+            } else {
+                changeNeededField.classList.add('hidden');
+            }
+        }
+
+        window.generateWhatsAppLink = function() {
+            if (cart.length === 0) {
+                return alertMessage('⚠️ Seu carrinho está vazio! Adicione itens antes de finalizar.', 'error');
+            }
+            
+            const address = document.getElementById('address').value.trim();
+            const paymentMethod = paymentMethodSelect.value;
+            const changeAmountInput = document.getElementById('change-amount').value;
+            const notes = document.getElementById('notes').value.trim();
+            const total = calculateTotal();
+
+            if (address === '') {
+                alertMessage('⚠️ Por favor, insira o endereço completo para a entrega.', 'error');
+                document.getElementById('address').focus();
+                return;
+            }
+
+            let orderList = '';
+            cart.forEach(item => {
+                const itemTotal = (item.price * item.quantity).toFixed(2).replace('.', ',');
+                orderList += ` - ${item.quantity}x ${item.name} | ${item.volume} | Total: R$ ${itemTotal}\n`;
+            });
+
+            let paymentDetails = `\n*Forma de Pagamento:* ${paymentMethod}`;
+            if (paymentMethod === 'Dinheiro') {
+                const changeAmount = parseFloat(changeAmountInput) || 0;
+                
+                if (changeAmount > 0 && changeAmount >= total) {
+                     paymentDetails += `\n*Troco para:* R$ ${changeAmount.toFixed(2).replace('.', ',')}`;
+                } else if (changeAmount > 0 && changeAmount < total) {
+                    alertMessage('⚠️ O valor do troco deve ser maior ou igual ao total do pedido.', 'error');
+                    return; 
+                } else {
+                    paymentDetails += `\n*Troco:* Não Precisa`;
+                }
+            }
+
+            const finalMessage = `
+*PEDIDO AÇAÍ ESSENCE (Luxo)*
+---------------------------------
+
+*ITENS DO PEDIDO:*
+${orderList}
+
+*TOTAL FINAL:* R$ ${total.toFixed(2).replace('.', ',')}
+
+---------------------------------
+*DADOS DA ENTREGA*
+*Endereço:* ${address}
+${paymentDetails}
+*Observações:* ${notes || 'Nenhuma observação.'}
+
+---------------------------------
+*Açaí Essence - A elegância do sabor.*
+            `.trim();
+
+            const whatsappUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(finalMessage)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // --- INICIALIZAÇÃO ---
+        window.addEventListener('load', () => {
+            renderProductCards();
+            showPage('home-page');
+            updateCartCount();
+        });
+
+        // Toggle do Menu Mobile
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+    })();
+    </script>
+</body>
+</html>
